@@ -4,6 +4,7 @@ var reverseTypeface = document.getElementById("reverseTypeface");
 var filetypeJson = document.getElementById("filetypeJson");
 var restrictCharactersCheck = document.getElementById("restrictCharacters");
 var restrictCharacterSetInput = document.getElementById("restrictCharacterSet");
+var convertAllCharactersCheck = document.getElementById("convertAllCharacters");
 
 window.onload = function (){
     restrictCharacterSetInput.disabled = !restrictCharactersCheck.checked;
@@ -60,21 +61,19 @@ var convert = function(font){
 		convertAll: false
 	};
 	
-	if (restrictCharactersCheck.checked) {
+	if (convertAllCharactersCheck.checked) {
+		restriction.convertAll = true;
+	} else if (restrictCharactersCheck.checked) {
 		var restrictContent = restrictCharacterSetInput.value;
-		if (restrictContent.trim() === 'all' || restrictContent.trim() === '*') {
-			restriction.convertAll = true;
-		} else {
-			var rangeSeparator = '-';
-			if (restrictContent.indexOf(rangeSeparator) != -1) {
-				var rangeParts = restrictContent.split(rangeSeparator);
-				if (rangeParts.length === 2 && !isNaN(rangeParts[0]) && !isNaN(rangeParts[1])) {
-					restriction.range = [parseInt(rangeParts[0]), parseInt(rangeParts[1])];
-				}
+		var rangeSeparator = '-';
+		if (restrictContent.indexOf(rangeSeparator) != -1) {
+			var rangeParts = restrictContent.split(rangeSeparator);
+			if (rangeParts.length === 2 && !isNaN(rangeParts[0]) && !isNaN(rangeParts[1])) {
+				restriction.range = [parseInt(rangeParts[0]), parseInt(rangeParts[1])];
 			}
-			if (restriction.range === null) {
-				restriction.set = restrictContent;
-			}
+		}
+		if (restriction.range === null) {
+			restriction.set = restrictContent;
 		}
 	}
 	
