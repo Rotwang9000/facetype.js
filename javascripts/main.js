@@ -112,8 +112,8 @@ var convert = function(font){
                     token.o = '';
                     if (reverseTypeface.checked) {glyph.path.commands = reverseCommands(glyph.path.commands);}
                     glyph.path.commands.forEach(function(command,i){
-                        if (command.type.toLowerCase() === 'c') {command.type = 'b';}
-                        token.o += command.type.toLowerCase();
+                        if (command.type && command.type.toLowerCase() === 'c') {command.type = 'b';}
+                        token.o += command.type ? command.type.toLowerCase() : '';
                         token.o += ' ';
                         if (command.x !== undefined && command.y !== undefined){
                             token.o += Math.round(command.x * scale);
