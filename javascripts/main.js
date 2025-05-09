@@ -73,7 +73,7 @@ var convert = function(font){
 			}
 		}
 		if (restriction.range === null) {
-			restriction.set = restrictContent;
+			restriction.set = Array.from(restrictContent).map(char => char.codePointAt(0));
 		}
 	}
 	
@@ -101,7 +101,7 @@ var convert = function(font){
                     if (restriction.range !== null) {
                         needToExport = (unicode >= restriction.range[0] && unicode <= restriction.range[1]);
                     } else if (restriction.set !== null) {
-                        needToExport = (restrictCharacterSetInput.value.indexOf(glyphCharacter) != -1);
+                        needToExport = (restriction.set.indexOf(unicode) != -1);
                     }
                 }
                 if (needToExport) {
@@ -167,7 +167,9 @@ var convert = function(font){
     if(filetypeJson.checked) {
         return JSON.stringify(result);
     } else {
-        return "if (_typeface_js && _typeface_js.loadFace) _typeface_js.loadFace("+ JSON.stringify(result) + ");"
+        return "// Glyphs are keyed by Unicode code point (number), not character.\n" +
+               "// To access a glyph, use the code point like this: data.glyphs[char.charCodeAt(0)]\n" +
+               "if (_typeface_js && _typeface_js.loadFace) _typeface_js.loadFace(" + JSON.stringify(result) + ");"
     }
 };
 
