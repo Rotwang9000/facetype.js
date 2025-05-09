@@ -55,21 +55,26 @@ var convert = function(font){
     result.glyphs = {};
 
 	var restriction = {
-		range : null,
-		set : null
+		range: null,
+		set: null,
+		convertAll: false
 	};
 	
 	if (restrictCharactersCheck.checked) {
 		var restrictContent = restrictCharacterSetInput.value;
-		var rangeSeparator = '-';
-		if (restrictContent.indexOf (rangeSeparator) != -1) {
-			var rangeParts = restrictContent.split (rangeSeparator);
-			if (rangeParts.length === 2 && !isNaN (rangeParts[0]) && !isNaN (rangeParts[1])) {
-				restriction.range = [parseInt (rangeParts[0]), parseInt (rangeParts[1])];
+		if (restrictContent.trim() === 'all' || restrictContent.trim() === '*') {
+			restriction.convertAll = true;
+		} else {
+			var rangeSeparator = '-';
+			if (restrictContent.indexOf(rangeSeparator) != -1) {
+				var rangeParts = restrictContent.split(rangeSeparator);
+				if (rangeParts.length === 2 && !isNaN(rangeParts[0]) && !isNaN(rangeParts[1])) {
+					restriction.range = [parseInt(rangeParts[0]), parseInt(rangeParts[1])];
+				}
 			}
-		}
-		if (restriction.range === null) {
-			restriction.set = restrictContent;
+			if (restriction.range === null) {
+				restriction.set = restrictContent;
+			}
 		}
 	}
 	
@@ -89,10 +94,12 @@ var convert = function(font){
         unicodes.forEach(function(unicode){
 			var glyphCharacter = String.fromCharCode (unicode);
 			var needToExport = true;
-			if (restriction.range !== null) {
-				needToExport = (unicode >= restriction.range[0] && unicode <= restriction.range[1]);
-			} else if (restriction.set !== null) {
-				needToExport = (restrictCharacterSetInput.value.indexOf (glyphCharacter) != -1);
+			if (!restriction.convertAll) {
+				if (restriction.range !== null) {
+					needToExport = (unicode >= restriction.range[0] && unicode <= restriction.range[1]);
+				} else if (restriction.set !== null) {
+					needToExport = (restrictCharacterSetInput.value.indexOf(glyphCharacter) != -1);
+				}
 			}
             if (needToExport) {
 
