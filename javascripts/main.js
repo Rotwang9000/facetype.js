@@ -134,7 +134,7 @@ var convert = function(font){
                             token.o += ' ';
                         }
                     });
-                    result.glyphs[String.fromCharCode(unicode)] = token;
+                    result.glyphs[unicode] = token;
                 }
             });
         }
