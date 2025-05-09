@@ -86,7 +86,7 @@ var convert = function(font){
             if (glyph.unicode !== undefined) {
                 unicodes.push(glyph.unicode);
             }
-            if (glyph.unicodes.length) {
+            if (glyph.unicodes && glyph.unicodes.length) {
                 glyph.unicodes.forEach(function(unicode){
                     if (unicodes.indexOf(unicode) == -1) {
                         unicodes.push(unicode);
@@ -106,9 +106,9 @@ var convert = function(font){
                 }
                 if (needToExport) {
                     var token = {};
-                    token.ha = Math.round(glyph.advanceWidth * scale);
-                    token.x_min = Math.round(glyph.xMin * scale);
-                    token.x_max = Math.round(glyph.xMax * scale);
+                    token.ha = Math.round(glyph.advanceWidth ? glyph.advanceWidth * scale : 0);
+                    token.x_min = Math.round(glyph.xMin ? glyph.xMin * scale : 0);
+                    token.x_max = Math.round(glyph.xMax ? glyph.xMax * scale : 0);
                     token.o = '';
                     if (reverseTypeface.checked) {glyph.path.commands = reverseCommands(glyph.path.commands);}
                     glyph.path.commands.forEach(function(command,i){
@@ -139,29 +139,29 @@ var convert = function(font){
             });
         }
     }
-    result.familyName = font.familyName;
-    result.ascender = Math.round(font.ascender * scale);
-    result.descender = Math.round(font.descender * scale);
-    result.underlinePosition = Math.round(font.tables.post.underlinePosition * scale);
-    result.underlineThickness = Math.round(font.tables.post.underlineThickness * scale);
+    result.familyName = font.familyName || 'Unknown';
+    result.ascender = Math.round(font.ascender ? font.ascender * scale : 0);
+    result.descender = Math.round(font.descender ? font.descender * scale : 0);
+    result.underlinePosition = Math.round(font.tables && font.tables.post && font.tables.post.underlinePosition ? font.tables.post.underlinePosition * scale : 0);
+    result.underlineThickness = Math.round(font.tables && font.tables.post && font.tables.post.underlineThickness ? font.tables.post.underlineThickness * scale : 0);
     result.boundingBox = {
-        "yMin": Math.round(font.tables.head.yMin * scale),
-        "xMin": Math.round(font.tables.head.xMin * scale),
-        "yMax": Math.round(font.tables.head.yMax * scale),
-        "xMax": Math.round(font.tables.head.xMax * scale)
+        'yMin': Math.round(font.tables && font.tables.head && font.tables.head.yMin ? font.tables.head.yMin * scale : 0),
+        'xMin': Math.round(font.tables && font.tables.head && font.tables.head.xMin ? font.tables.head.xMin * scale : 0),
+        'yMax': Math.round(font.tables && font.tables.head && font.tables.head.yMax ? font.tables.head.yMax * scale : 0),
+        'xMax': Math.round(font.tables && font.tables.head && font.tables.head.xMax ? font.tables.head.xMax * scale : 0)
     };
     result.resolution = 1000;
-    result.original_font_information = font.tables.name;
-    if (font.styleName.toLowerCase().indexOf("bold") > -1){
-        result.cssFontWeight = "bold";
+    result.original_font_information = font.tables && font.tables.name ? font.tables.name : {};
+    if (font.styleName && font.styleName.toLowerCase().indexOf('bold') > -1){
+        result.cssFontWeight = 'bold';
     } else {
-        result.cssFontWeight = "normal";
+        result.cssFontWeight = 'normal';
     };
 
-    if (font.styleName.toLowerCase().indexOf("italic") > -1){
-        result.cssFontStyle = "italic";
+    if (font.styleName && font.styleName.toLowerCase().indexOf('italic') > -1){
+        result.cssFontStyle = 'italic';
     } else {
-        result.cssFontStyle = "normal";
+        result.cssFontStyle = 'normal';
     };
 
     if(filetypeJson.checked) {
